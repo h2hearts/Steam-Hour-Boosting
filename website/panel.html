@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Steam Hour Boosting - Control Panel</title>
+    <meta name="description" content="Steam Hour Boosting Dashboard - Monitor your boosting plans and game hours.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="panel.css">
+</head>
+<body>
+    <div class="dashboard-wrapper">
+        <main class="dashboard-main">
+            <!-- Top Stats Section (3 Cards) -->
+            <section class="stats-section" aria-label="Boosting Statistics">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span class="stat-label">Accounts Running</span>
+                        <div class="stat-value-container">
+                            <span class="stat-value" id="accounts-running">0</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <span class="stat-label">Total Games Boosting</span>
+                        <div class="stat-value-container">
+                            <span class="stat-value" id="total-games-boosting">0</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <span class="stat-label">Total Accounts Hour Boosted</span>
+                        <div class="stat-value-container">
+                            <span class="stat-value" id="total-accounts-hours">0</span>
+                            <span class="stat-unit">hours</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Bottom Steam Account & Boosting Section -->
+            <section class="boosting-card-section" aria-label="Steam Boosting Management">
+                <div class="boosting-card">
+                    <!-- Card Top Header Bar -->
+                    <div class="card-header">
+                        <div class="status-indicator">
+                            <span class="status-dot stopped" id="status-dot"></span>
+                            <span class="status-text stopped" id="status-text">0 / 0 Running</span>
+                        </div>
+
+                        <div class="header-actions">
+                            <button class="btn btn-add-account" id="btn-add-account" type="button">
+                                <svg class="btn-icon" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+                                </svg>
+                                <span>Add Steam Account</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Accounts Table View -->
+                    <div class="table-container">
+                        <!-- Table Header -->
+                        <div class="table-header-row">
+                            <div class="col-th col-username">Username</div>
+                            <div class="col-th col-timeleft">Time Left</div>
+                            <div class="col-th col-games">Games</div>
+                            <div class="col-th col-uptime">Uptime</div>
+                            <div class="col-th col-latestboosting">Latest Boosting</div>
+                            <div class="col-th col-actions">Actions</div>
+                        </div>
+
+                        <!-- Table Body / Account Rows Container -->
+                        <div class="accounts-container" id="accounts-container">
+                            <!-- Dynamically rendered via panel.js -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Games Configuration Modal -->
+    <div class="modal-overlay" id="games-modal-overlay" aria-hidden="true">
+        <div class="modal-dialog" role="dialog" aria-labelledby="modal-games-title">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modal-games-title">Games</h2>
+                <button class="modal-close-btn" id="modal-close-btn" type="button" aria-label="Close modal">
+                    <svg viewBox="0 0 20 20" fill="currentColor" class="icon-close">
+                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    </svg>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <label class="input-label" for="game-search-input">Search Games to Boost (SteamDB / Steam Store)</label>
+                <div class="search-input-wrapper">
+                    <input type="text" id="game-search-input" class="search-input" placeholder="Type game name or AppID." autocomplete="off">
+                    <button class="btn-add-game" id="btn-add-game" type="button">Search / Add</button>
+                </div>
+
+                <!-- Live SteamDB / Steam Search Results Dropdown -->
+                <div class="steam-results-container" id="steam-results-container" style="display: none;">
+                    <div class="results-header">
+                        <span>Select verified game from Steam:</span>
+                        <span id="results-loader" class="results-loader" style="display: none;">Searching Steam...</span>
+                    </div>
+                    <div class="results-list" id="steam-results-list"></div>
+                </div>
+
+                <!-- Selected Games Container -->
+                <div class="selected-games-header">
+                    <span class="selected-games-label">Selected Games:</span>
+                </div>
+                <div class="selected-games-box" id="selected-games-box">
+                    <!-- Game chips rendered dynamically via panel.js -->
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <div class="games-count-badge" id="games-modal-count">0 Games</div>
+                <div class="modal-footer-actions">
+                    <button class="btn-modal btn-modal-cancel" id="modal-cancel-btn" type="button">Cancel</button>
+                    <button class="btn-modal btn-modal-save" id="modal-save-btn" type="button">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Steam Account Modal -->
+    <div class="modal-overlay" id="account-modal-overlay" aria-hidden="true">
+        <div class="modal-dialog" role="dialog" aria-labelledby="modal-account-title">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modal-account-title">Add Steam Account</h2>
+                <button class="modal-close-btn" id="account-modal-close-btn" type="button" aria-label="Close modal">
+                    <svg viewBox="0 0 20 20" fill="currentColor" class="icon-close">
+                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    </svg>
+                </button>
+            </div>
+
+            <form id="form-add-account" class="account-form">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="input-label" for="steam-username-input">Steam Account Name</label>
+                        <input type="text" id="steam-username-input" class="search-input" placeholder="e.g. your_steam_username" required autocomplete="username">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="input-label" for="steam-password-input">Steam Password</label>
+                        <input type="password" id="steam-password-input" class="search-input" placeholder="••••••••••••" required autocomplete="current-password">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="input-label" for="steam-guard-input">
+                            Steam Guard Code / 2FA <span style="font-size:11.5px; color:#94a3b8; font-weight:normal;">(Fill in if your account has Steam Guard enabled)</span>
+                        </label>
+                        <input type="text" id="steam-guard-input" class="search-input" placeholder="••••••••••••" autocomplete="one-time-code" maxlength="10">
+                    </div>
+
+                    <div id="account-error-msg" class="error-banner" style="display: none;"></div>
+                </div>
+
+                <div class="modal-footer">
+                    <div></div>
+                    <div class="modal-footer-actions">
+                        <button class="btn-modal btn-modal-cancel" id="account-modal-cancel-btn" type="button">Cancel</button>
+                        <button class="btn-modal btn-modal-save" type="submit">Connect Account</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Steam Guard 2FA Code Modal -->
+    <div class="modal-overlay" id="guard-modal-overlay" aria-hidden="true">
+        <div class="modal-dialog" role="dialog" aria-labelledby="modal-guard-title" style="max-width: 440px;">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modal-guard-title">Steam Guard 2FA</h2>
+                <button class="modal-close-btn" id="guard-modal-close-btn" type="button" aria-label="Close modal">
+                    <svg viewBox="0 0 20 20" fill="currentColor" class="icon-close">
+                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    </svg>
+                </button>
+            </div>
+
+            <form id="form-guard-code">
+                <div class="modal-body">
+                    <p class="guard-description">
+                        Enter the Steam Guard code sent to your email or Steam Mobile for the account: <strong id="guard-target-username">user</strong>
+                    </p>
+                    <div class="form-group">
+                        <input type="text" id="steam-guard-code-input" class="search-input guard-input" placeholder="Ex: R1234 or 5-digit code" required autocomplete="one-time-code" maxlength="10">
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <div></div>
+                    <div class="modal-footer-actions">
+                        <button class="btn-modal btn-modal-cancel" id="guard-modal-cancel-btn" type="button">Close</button>
+                        <button class="btn-modal btn-modal-save" type="submit">Verify Code</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Account Boosting Settings Modal -->
+    <div class="modal-overlay" id="settings-modal-overlay" aria-hidden="true">
+        <div class="modal-dialog" role="dialog" aria-labelledby="modal-settings-title" style="max-width: 580px;">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modal-settings-title">Settings</h2>
+                <button class="modal-close-btn" id="settings-modal-close-btn" type="button" aria-label="Close modal">
+                    <svg viewBox="0 0 20 20" fill="currentColor" class="icon-close">
+                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    </svg>
+                </button>
+            </div>
+
+            <form id="form-settings">
+                <div class="modal-body settings-modal-body">
+                    <!-- Card 1: Custom In-Game Title -->
+                    <div class="settings-card">
+                        <div class="settings-card-header">
+                            <div class="settings-card-left">
+                                <div class="settings-heading-row">
+                                    <span class="settings-card-title">Custom In-Game Title</span>
+                                </div>
+                                <p class="settings-card-subtitle">Display custom in-game status, real or made-up</p>
+                            </div>
+                            <div class="settings-card-right">
+                                <label class="toggle-switch" for="setting-custom-title-toggle">
+                                    <input type="checkbox" id="setting-custom-title-toggle">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="settings-card-content">
+                            <input type="text" id="setting-custom-title-input" class="settings-input" placeholder="Hour Boosting | github.com/h2hearts" autocomplete="off">
+                        </div>
+                    </div>
+
+                    <!-- Card 2: Custom Away Message -->
+                    <div class="settings-card">
+                        <div class="settings-card-header">
+                            <div class="settings-card-left">
+                                <div class="settings-heading-row">
+                                    <span class="settings-card-title">Custom Away Message</span>
+                                </div>
+                                <p class="settings-card-subtitle">Auto-Reply message for when you're AFK</p>
+                            </div>
+                            <div class="settings-card-right">
+                                <label class="toggle-switch" for="setting-away-message-toggle">
+                                    <input type="checkbox" id="setting-away-message-toggle">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="settings-card-content">
+                            <input type="text" id="setting-away-message-input" class="settings-input" placeholder="[Auto] I'm Currently Hour Boosting, visit github.com/h2hearts" autocomplete="off">
+                        </div>
+                    </div>
+
+                    <!-- Card 3: Appearance -->
+                    <div class="settings-card settings-card-appearance">
+                        <div class="settings-card-header align-center">
+                            <div class="settings-card-left">
+                                <div class="settings-heading-row">
+                                    <span class="settings-card-title">Appearance</span>
+                                </div>
+                                <p class="settings-card-subtitle">Set your status and display mode</p>
+                            </div>
+                            <div class="settings-card-controls">
+                                <div class="settings-select-wrapper active-border">
+                                    <select id="setting-appearance-select" class="settings-select">
+                                        <option value="online">Online</option>
+                                        <option value="invisible">Invisible</option>
+                                        <option value="away">Away</option>
+                                        <option value="busy">Busy</option>
+                                    </select>
+                                    <svg class="select-chevron" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                                <div class="settings-select-wrapper">
+                                    <select id="setting-display-mode-select" class="settings-select">
+                                        <option value="normal">Normal</option>
+                                    </select>
+                                    <svg class="select-chevron" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <div></div>
+                    <div class="modal-footer-actions">
+                        <button class="btn-modal btn-modal-cancel" id="settings-modal-cancel-btn" type="button">Cancel</button>
+                        <button class="btn-modal btn-modal-save" id="settings-modal-submit-btn" type="submit">Save Settings</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="panel.js"></script>
+</body>
+</html>

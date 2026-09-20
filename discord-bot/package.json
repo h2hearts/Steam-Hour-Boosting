@@ -1,0 +1,24 @@
+{
+  "name": "Steam-Hour-Boosting",
+  "version": "1.0.0",
+  "description": "Steam Hour Boosting Discord Bot",
+  "main": "index.ts",
+  "type": "module",
+  "scripts": {
+    "deploy": "node deploy-commands.ts",
+    "start": "node index.ts",
+    "dev": "node --watch index.ts"
+  },
+  "author": "h2hearts",
+  "license": "MIT",
+  "dependencies": {
+    "discord.js": "^14.18.0",
+    "dotenv": "^16.4.7",
+    "steam-user": "^5.0.10"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.2",
+    "@types/steam-user": "^5.1.1",
+    "typescript": "^7.0.2"
+  }
+}

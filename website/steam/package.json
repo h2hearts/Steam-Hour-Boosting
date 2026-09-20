@@ -1,0 +1,22 @@
+{
+  "name": "Steam-Hour-Boosting",
+  "version": "1.0.0",
+  "description": "Steam Hour Boosting Website",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "keywords": [
+    "steam",
+    "hour-booster",
+    "steam-user"
+  ],
+  "author": "h2hearts",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "steam-user": "^5.0.10"
+  }
+}
